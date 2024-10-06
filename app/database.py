@@ -1,8 +1,11 @@
+import logging
 from typing import Optional
 
 import sqlalchemy as sa
 
 from app.models import Question
+
+logger = logging.getLogger("uvicorn.info")
 
 _ENGINE: Optional[sa.Engine] = None
 metadata = sa.MetaData()
@@ -21,11 +24,17 @@ def connect(connection_string: str = "sqlite:///history.db"):
     global _ENGINE
 
     if _ENGINE is None:
+        logger.info(f"Connecting to '{connection_string}' database")
         _ENGINE = sa.create_engine(connection_string)
-        metadata.create_all(_ENGINE, checkfirst=True)
+
+
+def init():
+    logger.info("Creating tables if they do not exist")
+    metadata.create_all(_ENGINE)
 
 
 def disconnect():
+    logger.info("Disconnecting from database")
     _ENGINE.dispose()
 
 

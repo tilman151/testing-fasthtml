@@ -10,7 +10,7 @@ bootstrap_icons = (
 bootstrap_icons_link = ft.Link(rel="stylesheet", href=bootstrap_icons)
 app, rt = fast_app(
     hdrs=(bootstrap_icons_link,),
-    on_startup=[utils.pull_llm, database.connect],
+    on_startup=[utils.pull_llm, database.connect, database.init],
     on_shutdown=[database.disconnect],
 )
 
