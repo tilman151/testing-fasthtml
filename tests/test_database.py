@@ -22,7 +22,7 @@ def test_connect(database_module, clean_database):
     assert database_module._ENGINE is None
     database_module.connect(clean_database)
     assert isinstance(database_module._ENGINE, sa.engine.Engine)
-    assert database_module._ENGINE.url == clean_database
+    assert str(database_module._ENGINE.url) == clean_database
 
 
 def test_disconnect(database_module, clean_database):
