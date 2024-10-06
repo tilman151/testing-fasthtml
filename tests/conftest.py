@@ -25,8 +25,12 @@ def client(clean_database, monkeypatch):
     from app.main import app
 
     client = TestClient(app)
+    client.headers["HX-Request"] = "true"
+    database.connect(clean_database)
 
-    return client
+    yield client
+
+    database.disconnect()
 
 
 @pytest.fixture
