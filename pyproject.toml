@@ -7,6 +7,7 @@ requires-python = ">=3.11"
 dependencies = [
     "ollama>=0.3.3",
     "python-fasthtml>=0.6.9",
+    "sqlalchemy>=2.0.35",
 ]
 
 [tool.uv]
