@@ -243,6 +243,18 @@ wheels = [
 ]
 
 [[package]]
+name = "ollama"
+version = "0.3.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a6/8e/60a9b065eb796ef3996451cbe2d8044f6b030696166693b9805ae33b8b4c/ollama-0.3.3.tar.gz", hash = "sha256:f90a6d61803117f40b0e8ff17465cab5e1eb24758a473cfe8101aff38bc13b51", size = 10390 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6a/ca/d22905ac3f768523f778189d38c9c6cd9edf4fa9dd09cb5a3fc57b184f90/ollama-0.3.3-py3-none-any.whl", hash = "sha256:ca6242ce78ab34758082b7392df3f9f6c2cb1d070a9dede1a4c545c929e16dba", size = 10267 },
+]
+
+[[package]]
 name = "packaging"
 version = "24.1"
 source = { registry = "https://pypi.org/simple" }
@@ -524,6 +536,7 @@ name = "testing-fasthtml"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "ollama" },
     { name = "python-fasthtml" },
 ]
 
@@ -535,7 +548,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "python-fasthtml", specifier = ">=0.6.9" }]
+requires-dist = [
+    { name = "ollama", specifier = ">=0.3.3" },
+    { name = "python-fasthtml", specifier = ">=0.6.9" },
+]
 
 [package.metadata.requires-dev]
 dev = [
