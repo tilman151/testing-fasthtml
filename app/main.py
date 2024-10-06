@@ -1,19 +1,42 @@
 import ollama
-from fasthtml import ft
+from fasthtml import ft, pico
 from fasthtml.common import fast_app, serve
 
-from app import utils
+from app import utils, database
 
-app, rt = fast_app(on_startup=[utils.pull_llm])
+bootstrap_icons = (
+    "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+)
+bootstrap_icons_link = ft.Link(rel="stylesheet", href=bootstrap_icons)
+app, rt = fast_app(
+    hdrs=(bootstrap_icons_link,),
+    on_startup=[utils.pull_llm, database.connect],
+    on_shutdown=[database.disconnect],
+)
 
 
 @rt("/")
 def home():
     return ft.Main(
         ft.Form(
-            ft.Label("Question", ft.Input(name="question")),
-            ft.Button("Submit"),
+            ft.Label(
+                "Question",
+                pico.Group(
+                    ft.Input(name="question", required=True),
+                    ft.Button(
+                        id="history-button",
+                        cls="bi bi-clock-history",
+                        type="button",
+                        hx_get="/history",
+                        hx_target="#history-container",
+                    ),
+                ),
+            ),
+            ft.Span(id="history-container"),
+            ft.Button("Ask"),
+            id="question-form",
             hx_post="/ask",
+            hx_validate=True,
         ),
         cls="container",
     )
@@ -21,17 +44,28 @@ def home():
 
 @rt("/ask")
 def post(question: str):
+    answer = ollama.generate(model="gemma2:2b", prompt=question)["response"]
+    database.append_to_history(question, answer)
+
     return (
         ft.Label("Question", ft.Input(name="question", value=question, disabled=True)),
-        ft.Label(
-            "Answer",
-            ft.Input(
-                name="answer",
-                value=ollama.generate(model="gemma2:2b", prompt=question)["response"],
-                disabled=True,
-            ),
-        ),
+        ft.Label("Answer", ft.Input(name="answer", value=answer, disabled=True)),
         ft.Button("Reset", hx_get="/", hx_target="body"),
+    )
+
+
+@rt("/history")
+def get():
+    return ft.Table(
+        ft.Thead(ft.Tr(ft.Th("Question"), ft.Th("Asked at"))),
+        ft.Tbody(*database.get_recent_questions(), hx_target="#question-form"),
+    ), ft.Button(
+        id="history-button",
+        cls="bi bi-clock-history",
+        type="button",
+        hx_get="/",
+        hx_target="body",
+        hx_swap_oob="outerHTML",
     )
 
 
