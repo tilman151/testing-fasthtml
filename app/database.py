@@ -34,8 +34,11 @@ def init():
 
 
 def disconnect():
+    global _ENGINE
+
     logger.info("Disconnecting from database")
     _ENGINE.dispose()
+    _ENGINE = None
 
 
 def append_to_history(question: str, answer: str):
