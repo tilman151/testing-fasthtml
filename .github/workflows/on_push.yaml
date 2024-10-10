@@ -40,5 +40,7 @@ jobs:
       - uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
+      - run: curl -fsSL https://ollama.com/install.sh | sh
+      - run: ollama pull gemma2:2b
       - run: uv run --frozen poe setup_e2e
       - run: uv run --frozen poe e2e
