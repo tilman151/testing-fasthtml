@@ -29,4 +29,6 @@ markers = [
 unit = "pytest -m 'not integration and not e2e'"
 integration = "pytest -m integration"
 e2e = "pytest -m e2e"
-setup_e2e = "playwright install chromium --with-deps"
+setup_e2e = ["_setup_browser", "setup_llm"]
+setup_llm = "python -c 'from app import utils; utils.pull_llm()'"
+_setup_browser = "playwright install chromium --with-deps"
