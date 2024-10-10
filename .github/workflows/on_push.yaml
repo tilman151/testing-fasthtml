@@ -41,6 +41,6 @@ jobs:
         with:
           enable-cache: true
       - run: curl -fsSL https://ollama.com/install.sh | sh
-      - run: ollama pull gemma2:2b
+      - run: ollama pull llama3.2:1b
       - run: uv run --frozen poe setup_e2e
       - run: uv run --frozen poe e2e
