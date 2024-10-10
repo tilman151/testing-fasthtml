@@ -48,7 +48,7 @@ def home():
 
 @rt("/ask")
 def post(question: str):
-    answer = ollama.generate(model="gemma2:2b", prompt=question)["response"]
+    answer = ollama.generate(model="llama3.2:1b", prompt=question)["response"]
     database.append_to_history(question, answer)
 
     return (
