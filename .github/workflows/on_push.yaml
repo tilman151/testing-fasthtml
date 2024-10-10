@@ -41,11 +41,13 @@ jobs:
         with:
           enable-cache: true
       - run: curl -fsSL https://ollama.com/install.sh | sh
+      - run: sudo chown -R $USER /usr/share/ollama/
       - id: cache-llm
         uses: actions/cache@v4
         with:
           path: /usr/share/ollama/.ollama/models
           key: ${{ runner.os }}-llm
+      - run: sudo chown -R ollama:ollama /usr/share/ollama/
       - run: ollama pull llama3.2:1b
         if: steps.cache-llm.outputs.cache-hit != 'true'
       - run: uv run --frozen poe setup_e2e
