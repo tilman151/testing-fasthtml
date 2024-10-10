@@ -50,5 +50,10 @@ jobs:
       - run: sudo chown -R ollama:ollama /usr/share/ollama/
       - run: ollama pull llama3.2:1b
         if: steps.cache-llm.outputs.cache-hit != 'true'
+      - id: cache-browser
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.cache/ms-playwright
+          key: ${{ runner.os }}-browser
       - run: uv run --frozen poe setup_e2e
       - run: uv run --frozen poe e2e
