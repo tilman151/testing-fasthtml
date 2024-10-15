@@ -16,8 +16,9 @@ def test_ask_mocked_answer(client, mocker):
     response = client.post("/ask", data={"question": "question0"})
 
     assert response.status_code == 200
-    assert '<input name="question" value="question0" disabled>' in response.text
-    assert '<input name="answer" value="answer0" disabled>' in response.text
+    html = htmlmin.minify(response.text, remove_empty_space=True)
+    assert '<input name="question" value="question0" disabled>' in html
+    assert '<input name="answer" value="answer0" disabled>' in html
 
 
 @pytest.mark.integration
@@ -55,7 +56,7 @@ def test_history(client):
 
     assert response.status_code == 200
     html = htmlmin.minify(response.text, remove_empty_space=True)
-    assert re.search("<table>.+?", html)
+    assert re.search("<table>.+?</table>", html)
     assert "<thead><tr><th>Question</th><th>Asked at</th></tr></thead>" in html
     assert re.search(
         "<tbody hx-target=#question-form>(<tr.+?>.+?</tr>){2}</tbody>", html
