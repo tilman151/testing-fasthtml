@@ -40,7 +40,7 @@ jobs:
       - uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
-      - run: curl -fsSL https://ollama.com/install.sh | sh
+      - run: uv run --frozen poe setup_ollama
       - run: sudo chown -R $USER /usr/share/ollama/
       - id: cache-llm
         uses: actions/cache@v4
@@ -48,12 +48,12 @@ jobs:
           path: /usr/share/ollama/.ollama/models
           key: ${{ runner.os }}-llm
       - run: sudo chown -R ollama:ollama /usr/share/ollama/
-      - run: ollama pull llama3.2:1b
+      - run: uv run --frozen poe setup_llm
         if: steps.cache-llm.outputs.cache-hit != 'true'
       - id: cache-browser
         uses: actions/cache@v4
         with:
           path: /home/runner/.cache/ms-playwright
           key: ${{ runner.os }}-browser
-      - run: uv run --frozen poe setup_e2e
+      - run: uv run --frozen poe setup_browser
       - run: uv run --frozen poe e2e
