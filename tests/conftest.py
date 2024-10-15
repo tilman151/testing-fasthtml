@@ -71,9 +71,10 @@ def setup_server(tmp_database):
 
 
 @pytest.fixture(scope="module")
-def tmp_database(tmp_database_path, request):
+def tmp_database(tmp_database_path):
     engine = sa.create_engine(tmp_database_path)
     _init_database(engine)
+    engine.dispose()
 
     return tmp_database_path
 
@@ -81,7 +82,7 @@ def tmp_database(tmp_database_path, request):
 @pytest.fixture(scope="module")
 def tmp_database_path(tmp_path_factory, request):
     path = tmp_path_factory.mktemp(request.module.__name__ + "_data", numbered=True)
-    path = path / "inventory.db"
+    path = path / "history.db"
 
     return f"sqlite:///{path}"
 

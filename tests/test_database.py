@@ -1,7 +1,6 @@
 import datetime
 import importlib
 from random import shuffle
-from unittest import mock
 
 import pytest
 import sqlalchemy as sa
@@ -25,9 +24,9 @@ def test_connect(database_module, clean_database):
     assert str(database_module._ENGINE.url) == clean_database
 
 
-def test_disconnect(database_module, clean_database):
+def test_disconnect(database_module, clean_database, mocker):
     """It should dispose the engine and set the _ENGINE attribute to None."""
-    mock_engine = mock.Mock(sa.engine.Engine)
+    mock_engine = mocker.Mock(sa.engine.Engine)
     database_module._ENGINE = mock_engine
 
     database_module.disconnect()
@@ -67,10 +66,8 @@ def test_append_to_history(database_module, clean_database):
     for i, row in enumerate(result):
         assert row.question == f"question{i}"
         assert row.answer == f"answer{i}"
-        assert row.created_at is not None
-        assert row.created_at.replace(tzinfo=datetime.UTC) <= datetime.datetime.now(
-            datetime.UTC
-        )
+        assert isinstance(row.created_at, datetime.datetime)
+    assert result[0].created_at <= result[1].created_at
 
 
 def test_get_recent_questions(database_module, clean_database):
