@@ -1,6 +1,6 @@
 # Testing FastHTML
 
-This is the companion repository for the [Testing FastHTML Dashboards](https://krokotsch.eu/testing-fasthtml) blog post.
+This is the companion repository for the [Testing FastHTML Dashboards](https://krokotsch.eu/posts/testing-fasthtml) blog post.
 
 ## Installation
 
