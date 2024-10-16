@@ -17,8 +17,8 @@ def test_ask_mocked_answer(client, mocker):
 
     assert response.status_code == 200
     html = htmlmin.minify(response.text, remove_empty_space=True)
-    assert '<input name="question" value="question0" disabled>' in html
-    assert '<input name="answer" value="answer0" disabled>' in html
+    assert "<input name=question value=question0 disabled>" in html
+    assert "<input name=answer value=answer0 disabled>" in html
 
 
 @pytest.mark.integration
