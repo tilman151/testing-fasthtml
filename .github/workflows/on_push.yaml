@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - app/**
-      - test/**
+      - tests/**
       - uv.lock
       - pyproject.toml
       - .github/workflows/on_push.yaml
