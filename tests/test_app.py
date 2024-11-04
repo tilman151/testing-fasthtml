@@ -1,7 +1,5 @@
-import re
-
+import lxml.html
 import pytest
-import htmlmin
 from playwright.sync_api import Page
 
 from app import database
@@ -16,9 +14,9 @@ def test_ask_mocked_answer(client, mocker):
     response = client.post("/ask", data={"question": "question0"})
 
     assert response.status_code == 200
-    html = htmlmin.minify(response.text, remove_empty_space=True)
-    assert "<input name=question value=question0 disabled>" in html
-    assert "<input name=answer value=answer0 disabled>" in html
+    html = lxml.html.fromstring(response.text)
+    assert html.xpath("//input[@name='question' and @disabled and @value='question0']")
+    assert html.xpath("//input[@name='answer' and @disabled and @value='answer0']")
 
 
 @pytest.mark.integration
@@ -40,10 +38,11 @@ def test_history_empty(client):
     response = client.get("/history")
 
     assert response.status_code == 200
-    html = htmlmin.minify(response.text, remove_empty_space=True)
-    assert re.search("<table>.+?</table>", html)
-    assert "<thead><tr><th>Question</th><th>Asked at</th></tr></thead>" in html
-    assert "<tbody hx-target=#question-form></tbody>" in html
+    html = lxml.html.fromstring(response.text)
+    assert html.xpath("//table")
+    assert html.xpath("//table/thead/tr/th[text()='Question']")
+    assert html.xpath("//table/thead/tr/th[text()='Asked at']")
+    assert len(html.xpath("//table/tbody/tr")) == 0
 
 
 @pytest.mark.integration
@@ -55,12 +54,11 @@ def test_history(client):
     response = client.get("/history")
 
     assert response.status_code == 200
-    html = htmlmin.minify(response.text, remove_empty_space=True)
-    assert re.search("<table>.+?</table>", html)
-    assert "<thead><tr><th>Question</th><th>Asked at</th></tr></thead>" in html
-    assert re.search(
-        "<tbody hx-target=#question-form>(<tr.+?>.+?</tr>){2}</tbody>", html
-    )
+    html = lxml.html.fromstring(response.text)
+    assert html.xpath("//table")
+    assert html.xpath("//table/thead/tr/th[text()='Question']")
+    assert html.xpath("//table/thead/tr/th[text()='Asked at']")
+    assert len(html.xpath("//table/tbody/tr")) == 2
 
 
 @pytest.mark.integration
@@ -69,10 +67,8 @@ def test_history_swaps_button(client):
     response = client.get("/history")
 
     assert response.status_code == 200
-    html = htmlmin.minify(response.text, remove_empty_space=True)
-    assert re.search(
-        "<button.+hx-swap-oob=outerHTML.+id=history-button.*>.*?</button>", html
-    )
+    html = lxml.html.fromstring(response.text)
+    assert html.xpath("//button[@hx-swap-oob='outerHTML' and @id='history-button']")
 
 
 @pytest.mark.e2e

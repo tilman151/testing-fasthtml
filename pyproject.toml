@@ -5,7 +5,6 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "htmlmin>=0.1.12",
     "ollama>=0.3.3",
     "python-fasthtml>=0.6.9",
     "sqlalchemy>=2.0.35",
@@ -17,6 +16,7 @@ dev-dependencies = [
     "pytest-playwright>=0.5.2",
     "poethepoet>=0.29.0",
     "pytest-mock>=3.14.0",
+    "lxml>=5.3.0",
 ]
 
 [tool.pytest.ini_options]
